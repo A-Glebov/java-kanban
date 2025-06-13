@@ -7,7 +7,6 @@ import model.Task;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 
 public class TaskManager {
     private static int taskId;
@@ -122,13 +121,13 @@ public class TaskManager {
             }
         }
 
-            if (isNew && !isInProgress && !isDone) {
-                epic.setStatus(Status.NEW);
-            } else if (!isNew && !isInProgress) {
-                epic.setStatus(Status.DONE);
-            } else {
-                epic.setStatus(Status.IN_PROGRESS);
-            }
+        if (isNew && !isInProgress && !isDone) {
+            epic.setStatus(Status.NEW);
+        } else if (!isNew && !isInProgress) {
+            epic.setStatus(Status.DONE);
+        } else {
+            epic.setStatus(Status.IN_PROGRESS);
+        }
 
     }
 
@@ -166,7 +165,7 @@ public class TaskManager {
     }
 
 
-    // * получение списка задач определенного эпика
+    //получение списка задач определенного эпика
     public ArrayList<SubTask> getListOfSubtaskOfEpic(Epic epic) {
         ArrayList<SubTask> listOfSunTasksOfEpic = new ArrayList<>();
 
