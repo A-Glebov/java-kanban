@@ -1,4 +1,4 @@
-package servise;
+package service;
 
 import model.Epic;
 import model.Status;
@@ -11,9 +11,9 @@ import java.util.HashMap;
 public class TaskManager {
     private static int taskId;
 
-    HashMap<Integer, Task> listOfTasks = new HashMap<>();
-    HashMap<Integer, Epic> listOfEpics = new HashMap<>();
-    HashMap<Integer, SubTask> listOfSubTasks = new HashMap<>();
+    private final HashMap<Integer, Task> listOfTasks = new HashMap<>();
+    private final HashMap<Integer, Epic> listOfEpics = new HashMap<>();
+    private final HashMap<Integer, SubTask> listOfSubTasks = new HashMap<>();
 
     //Генерация идентификатора задач всех типов
     public int getTaskId() {
@@ -45,14 +45,17 @@ public class TaskManager {
 
     // Удаление всех эпиков
     public void deleteAllEpic() {
-        listOfSubTasks.clear(); // очищаем список всех подзадач
         listOfEpics.clear(); // очищаем список всех эпиков
     }
 
     // Удаление всех подзадач
     public void deleteAllSubTask() {
         listOfSubTasks.clear(); // очищаем список всех подзадач
-        listOfEpics.clear(); // очищаем список всех эпиков
+
+        for(Integer id : listOfEpics.keySet()) {
+            Epic epic = listOfEpics.get(id);
+            updateEpic(epic); //Обновляем статусы всех эпиков
+        }
     }
 
 
@@ -100,7 +103,9 @@ public class TaskManager {
     public void updateEpic(Epic epic) {
         ArrayList<SubTask> subTaskList = getListOfSubtaskOfEpic(epic);// Список подзадач эпика
 
-        if (subTaskList.isEmpty()) { // Если список пуст, значит статус эпика NEW
+        // Если список идентификаторов подзадач пуст,
+        // или если список всех подзадач пуст значит статус эпика NEW
+        if (subTaskList.isEmpty() || listOfSubTasks.isEmpty()) {
             epic.setStatus(Status.NEW);
             return;
         }
@@ -161,11 +166,11 @@ public class TaskManager {
         epic.getSubTaskIdList().remove(subTaskId); // Удаление ID подзадачи из списка ID подзадач текущего эпика
         updateEpic(epic); // Проверка и изменение статуса эпика
 
-        listOfSubTasks.remove(subTaskId); // Удаление из списка всех подзадач
+        listOfSubTasks.remove(subTaskId); // Удаление из списка подзадач
     }
 
 
-    //получение списка задач определенного эпика
+    //получение списка подзадач определенного эпика
     public ArrayList<SubTask> getListOfSubtaskOfEpic(Epic epic) {
         ArrayList<SubTask> listOfSunTasksOfEpic = new ArrayList<>();
 

@@ -2,7 +2,7 @@ import model.Epic;
 import model.Status;
 import model.SubTask;
 import model.Task;
-import servise.TaskManager;
+import service.TaskManager;
 
 import java.util.ArrayList;
 
@@ -57,6 +57,11 @@ public class Main {
         System.out.println(taskManager.getListOfEpics());
         System.out.println(taskManager.getListOfSubTask());
         System.out.println();
+
+        // Тестирование удаления всех подзадач и обновления статуса эпиков
+        taskManager.deleteAllSubTask();
+        System.out.println(taskManager.getListOfSubTask());
+        System.out.println(taskManager.getListOfEpics());
 
     }
 
