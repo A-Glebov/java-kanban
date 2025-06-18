@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class TaskManager {
-    private static int taskId;
+    private static int taskId = 0;
 
     private final HashMap<Integer, Task> listOfTasks = new HashMap<>();
     private final HashMap<Integer, Epic> listOfEpics = new HashMap<>();
@@ -52,9 +52,9 @@ public class TaskManager {
     public void deleteAllSubTask() {
         listOfSubTasks.clear(); // очищаем список всех подзадач
 
-        for(Integer id : listOfEpics.keySet()) {
+        for (Integer id : listOfEpics.keySet()) {
             Epic epic = listOfEpics.get(id);
-            updateEpic(epic); //Обновляем статусы всех эпиков
+            updateEpicStatus(epic); //Обновляем статусы всех эпиков
         }
     }
 
@@ -90,7 +90,7 @@ public class TaskManager {
         listOfSubTasks.put(subTask.getId(), subTask); // Сохранение задачи в список всех подзадач
         Epic epic = listOfEpics.get(subTask.getEpic().getId());// Получения эпика текущей подзадачи
         epic.getSubTaskIdList().add(subTask.getId()); // Добавление ID подзадачи в список ID подзадач эпика
-        updateEpic(epic); // обновление эпика
+        updateEpicStatus(epic); // обновление эпика
     }
 
 
@@ -99,8 +99,13 @@ public class TaskManager {
         listOfTasks.put(task.getId(), task);
     }
 
-    // Обновление эпика
+    //Обновление эпика
     public void updateEpic(Epic epic) {
+        listOfEpics.put(epic.getId(), epic);
+    }
+
+    // Обновление статуса эпика
+    public void updateEpicStatus(Epic epic) {
         ArrayList<SubTask> subTaskList = getListOfSubtaskOfEpic(epic);// Список подзадач эпика
 
         // Если список идентификаторов подзадач пуст,
@@ -136,11 +141,12 @@ public class TaskManager {
 
     }
 
+
     // Обновление подзадачи
     public void updateSubTask(SubTask subTask) {
         int subTaskId = subTask.getId();
         listOfSubTasks.put(subTaskId, subTask);
-        updateEpic(subTask.getEpic()); // Обновляем эпик
+        updateEpicStatus(subTask.getEpic()); // Обновляем статус эпика
     }
 
 
@@ -164,7 +170,7 @@ public class TaskManager {
         SubTask subTask = listOfSubTasks.get(subTaskId);
         Epic epic = subTask.getEpic(); // Получение ID эпика текущей подзадачи
         epic.getSubTaskIdList().remove(subTaskId); // Удаление ID подзадачи из списка ID подзадач текущего эпика
-        updateEpic(epic); // Проверка и изменение статуса эпика
+        updateEpicStatus(epic); // Проверка и изменение статуса эпика
 
         listOfSubTasks.remove(subTaskId); // Удаление из списка подзадач
     }
