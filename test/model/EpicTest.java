@@ -25,8 +25,8 @@ class EpicTest {
     @Test
     void epicCannotContainItselfAsSubTask() {
         Epic epic = new Epic(1, "Epic", "Description", Status.NEW, new ArrayList<>());
-        SubTask validSubTask = new SubTask(2, "SubTaskValid", "Valid", Status.NEW, epic);
-        SubTask invalidSubTask = new SubTask(epic.getId(), "SubTaskInvalid", "Invlid", Status.NEW, epic);
+        SubTask validSubTask = new SubTask(2, "SubTaskValid", "Valid", Status.NEW, epic.getId());
+        SubTask invalidSubTask = new SubTask(epic.getId(), "SubTaskInvalid", "Invalid", Status.NEW, epic.getId());
 
         ArrayList<Integer> subTasks = new ArrayList<>();
         subTasks.add(validSubTask.getId());

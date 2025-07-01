@@ -12,14 +12,21 @@ public interface TaskManager {
     //Генерация идентификатора задач всех типов
     int getTaskId();
 
+    // Геттеры для hashmap в которых хранятся задачи всех типов
+    HashMap<Integer, Task> getTasks();
+
+    HashMap<Integer, Epic> getEpics();
+
+    HashMap<Integer, SubTask> getSubtasks();
+
     // А. Получение списка задач
-    HashMap<Integer, Task> getListOfTasks();
+    ArrayList<Task> getListOfTasks();
 
     //Получение списка эпиков
-    HashMap<Integer, Epic> getListOfEpics();
+    ArrayList<Epic> getListOfEpics();
 
     // Получение списка всех подзадач
-    HashMap<Integer, SubTask> getListOfSubTask();
+    ArrayList<SubTask> getListOfSubTask();
 
     // Б. Удаление всех задач
     void deleteAllTasks();
@@ -64,7 +71,7 @@ public interface TaskManager {
     void deleteEpicById(int epicId);
 
     // Удаление подзадачи по Id
-    void deleteSubTaskById(Integer subTaskId);
+    void deleteSubTaskById(int subTaskId);
 
     //получение списка подзадач определенного эпика
     ArrayList<SubTask> getListOfSubtaskOfEpic(Epic epic);

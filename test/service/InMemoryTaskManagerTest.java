@@ -26,7 +26,7 @@ class InMemoryTaskManagerTest {
         taskManager.createTask(task);
         epic = new Epic(taskManager.getTaskId(), "Epic", "Description Epic", Status.NEW, new ArrayList<>());
         taskManager.createEpic(epic);
-        subTask = new SubTask(taskManager.getTaskId(), "Subtask, Epic", "Description Sub Ep", Status.NEW, epic);
+        subTask = new SubTask(taskManager.getTaskId(), "Subtask, Epic", "Description Sub Ep", Status.NEW, epic.getId());
         taskManager.createSubTask(subTask);
 
     }
@@ -40,7 +40,7 @@ class InMemoryTaskManagerTest {
         assertNotNull(savedTask, "Задача не найдена.");
         assertEquals(task, savedTask, "Задачи не совпадают.");
 
-        final HashMap<Integer, Task> tasks = taskManager.getListOfTasks();
+        final HashMap<Integer, Task> tasks = taskManager.getTasks();
 
         assertNotNull(tasks, "Задачи не возвращаются.");
         assertEquals(1, tasks.size(), "Неверное количество задач.");
@@ -58,7 +58,7 @@ class InMemoryTaskManagerTest {
         assertNotNull(savedEpic, "Задача не найдена.");
         assertEquals(epic, savedEpic, "Задачи не совпадают.");
 
-        final HashMap<Integer, Epic> epics = taskManager.getListOfEpics();
+        final HashMap<Integer, Epic> epics = taskManager.getEpics();
         assertNotNull(epics, "Задачи не возвращаются.");
         assertEquals(1, epics.size(), "Неверное количество задач.");
         assertEquals(epic, epics.get(epicId), "Задачи не совпадают.");
@@ -77,7 +77,7 @@ class InMemoryTaskManagerTest {
         assertNotNull(savedSubTask, "Задача не найдена.");
         assertEquals(subTask, savedSubTask, "Задачи не совпадают.");
 
-        final HashMap<Integer, SubTask> subTasks = taskManager.getListOfSubTask();
+        final HashMap<Integer, SubTask> subTasks = taskManager.getSubtasks();
         assertNotNull(subTasks, "Задачи не возвращаются.");
         assertEquals(1, subTasks.size(), "Неверное количество задач.");
         assertEquals(subTask, subTasks.get(subTaskId), "Задачи не совпадают.");
@@ -118,7 +118,7 @@ class InMemoryTaskManagerTest {
         assertEquals(subTask.getName(), addedTask.getName(), "Имена должны быть равны");
         assertEquals(subTask.getDescription(), addedTask.getDescription(), "Описания должны быть равны");
         assertEquals(subTask.getStatus(), addedTask.getStatus(), "Статусы должны быть равны");
-        assertEquals(subTask.getEpic(), addedTask.getEpic(), "Эпики должны быть равны");
+        assertEquals(subTask.getEpicId(), addedTask.getEpicId(), "Эпики должны быть равны");
 
     }
 
