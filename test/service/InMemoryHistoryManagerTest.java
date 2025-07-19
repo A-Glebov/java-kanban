@@ -67,8 +67,8 @@ class InMemoryHistoryManagerTest {
     // Задачи должны удаляться из истории
     @Test
     void shouldBeDeleteFromHistory() {
-        historyManager.remove(2);
         historyManager.remove(3);
+        historyManager.remove(2);
 
         assertEquals(1, historyManager.getHistory().size()); // Проверка по размеру
         assertEquals(task1, historyManager.getHistory().getLast()); // Проверка, что нужные элементы остались
