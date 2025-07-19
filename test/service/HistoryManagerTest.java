@@ -12,6 +12,7 @@ class HistoryManagerTest {
 
     HistoryManager historyManager = Managers.getDefaultHistory();
     TaskManager taskManager = Managers.getDefault();
+
     Task task = new Task(taskManager.getTaskId(), "Task", "Task description", Status.NEW);
 
     // Тест добавления в историю
