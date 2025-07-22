@@ -8,12 +8,12 @@ import java.util.*;
 public class InMemoryHistoryManager implements HistoryManager {
 
     // Список для хранения истории просмотров
-    Map<Integer, Node> nodes = new HashMap<>();
-    Node first;
-    Node last;
+    private final Map<Integer, Node> nodes = new HashMap<>();
+    private Node first;
+    private Node last;
 
     // Создание Node
-    void linkLast(Task task) {
+    private void linkLast(Task task) {
         Node newNode = new Node(last, task, null);
         if (first == null) {
             first = newNode;
@@ -25,7 +25,7 @@ public class InMemoryHistoryManager implements HistoryManager {
     }
 
     // Удаление Node
-    void removeNode(Node node) {
+    private void removeNode(Node node) {
 
         if (node == null) {
             return;
@@ -49,13 +49,15 @@ public class InMemoryHistoryManager implements HistoryManager {
     }
 
     // Получение списка задач из Node
-    public List<Task> getTasks() {
+    private List<Task> getTasks() {
         List<Task> history = new ArrayList<>();
         Node currentNode = first;
+
         while (currentNode != null) {
             history.add(currentNode.task);
             currentNode = currentNode.next;
         }
+
         return history;
 
     }
@@ -71,6 +73,9 @@ public class InMemoryHistoryManager implements HistoryManager {
     // Удаление задачи по id
     @Override
     public void remove(int id) {
+        if (nodes.get(id) == null) {
+            return;
+        }
         Node node = nodes.remove(id);
         removeNode(node);
     }
