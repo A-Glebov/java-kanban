@@ -68,9 +68,8 @@ class InMemoryTaskManagerTest {
     // InMemoryTaskManager добавляет задачи разного типа и может найти их по id;
     @Test
     void addNewSubtask() {
-        int epicId = epic.getId();
-        int subTaskId = subTask.getId();
 
+        int subTaskId = subTask.getId();
         final SubTask savedSubTask = taskManager.getSubTask(subTaskId);
 
         // для задач
@@ -130,6 +129,13 @@ class InMemoryTaskManagerTest {
         Task manualTask = new Task(manualId, "manualTask", "Description", Status.NEW);
         taskManager.createTask(manualTask);
         assertNotEquals(task, manualTask, "ID не должны совпадать");
+    }
+
+    // Эпик не должен содержать удаленных подзадач
+    @Test
+    void epicShouldNotContainDeletedSubtasks() {
+        taskManager.deleteSubTaskById(subTask.getId());
+        assertTrue(epic.getSubTaskIdList().isEmpty());
     }
 
 }

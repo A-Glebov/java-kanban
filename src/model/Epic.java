@@ -3,6 +3,7 @@ package model;
 import java.util.ArrayList;
 
 public class Epic extends Task {
+
     private ArrayList<Integer> subTaskIdList;
 
     public Epic(int id, String name, String description, Status status, ArrayList<Integer> subTaskIdList) {
@@ -28,4 +29,5 @@ public class Epic extends Task {
                 "subTaskIdList=" + subTaskIdList +
                 '}';
     }
+
 }
