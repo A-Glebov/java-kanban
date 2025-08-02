@@ -6,8 +6,8 @@ public class Epic extends Task {
 
     private ArrayList<Integer> subTaskIdList;
 
-    public Epic(int id, String name, String description, Status status, ArrayList<Integer> subTaskIdList) {
-        super(id, name, description, status);
+    public Epic(int id, Type type, String name, String description, Status status, ArrayList<Integer> subTaskIdList) {
+        super(id, type, name, description, status);
         this.subTaskIdList = subTaskIdList;
     }
 
@@ -25,8 +25,8 @@ public class Epic extends Task {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
-                ", epicStatus=" + status + '\'' +
-                "subTaskIdList=" + subTaskIdList +
+                ", epicStatus='" + status + '\'' +
+                ", subTaskIdList=" + subTaskIdList +
                 '}';
     }
 
