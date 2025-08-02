@@ -5,12 +5,14 @@ import java.util.Objects;
 public class Task {
 
     protected int id;
+    protected Type type;
     protected String name;
     protected String description;
     protected Status status;
 
-    public Task(int id, String name, String description, Status status) {
+    public Task(int id, Type type, String name, String description, Status status) {
         this.id = id;
+        this.type = type;
         this.name = name;
         this.description = description;
         this.status = status;
@@ -18,6 +20,10 @@ public class Task {
 
     public int getId() {
         return id;
+    }
+
+    public Type getType() {
+        return type;
     }
 
     public void setId(int id) {
@@ -64,9 +70,10 @@ public class Task {
     public String toString() {
         return "Task{" +
                 "id=" + id +
+                ", type='" + type + '\'' +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
-                ", taskStatus=" + status +
+                ", taskStatus='" + status + '\'' +
                 '}';
     }
 

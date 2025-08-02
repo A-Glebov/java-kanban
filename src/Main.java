@@ -1,7 +1,4 @@
-import model.Epic;
-import model.Status;
-import model.SubTask;
-import model.Task;
+import model.*;
 import service.Managers;
 import service.TaskManager;
 
@@ -13,15 +10,15 @@ public class Main {
         // Создаем менеджер
         TaskManager taskManager = Managers.getDefault();
 
-        Task task1 = new Task(taskManager.getTaskId(), "Task 1", "Task 1 description", Status.NEW);
-        Task task2 = new Task(taskManager.getTaskId(), "Task 2", "Task 2 description", Status.NEW);
+        Task task1 = new Task(taskManager.getTaskId(), Type.TASK, "Task 1", "Task 1 description", Status.NEW);
+        Task task2 = new Task(taskManager.getTaskId(), Type.TASK,"Task 2", "Task 2 description", Status.NEW);
 
-        Epic epic1 = new Epic(taskManager.getTaskId(), "Epic1", "Description Epic1", Status.NEW, new ArrayList<>());
-        SubTask subTask1Ep1 = new SubTask(taskManager.getTaskId(), "Subtask1, Epic1", "Description Sub1 Ep1", Status.NEW, epic1.getId());
-        SubTask subTask2Ep1 = new SubTask(taskManager.getTaskId(), "Subtask2, Epic1", "Description Sub2 Ep1", Status.NEW, epic1.getId());
-        SubTask subTask3Ep1 = new SubTask(taskManager.getTaskId(), "Subtask3, Epic1", "Description Sub3 Ep1", Status.NEW, epic1.getId());
+        Epic epic1 = new Epic(taskManager.getTaskId(), Type.EPIC,"Epic1", "Description Epic1", Status.NEW, new ArrayList<>());
+        SubTask subTask1Ep1 = new SubTask(taskManager.getTaskId(), Type.SUBTASK,"Subtask1, Epic1", "Description Sub1 Ep1", Status.NEW, epic1.getId());
+        SubTask subTask2Ep1 = new SubTask(taskManager.getTaskId(), Type.SUBTASK,"Subtask2, Epic1", "Description Sub2 Ep1", Status.NEW, epic1.getId());
+        SubTask subTask3Ep1 = new SubTask(taskManager.getTaskId(), Type.SUBTASK,"Subtask3, Epic1", "Description Sub3 Ep1", Status.NEW, epic1.getId());
 
-        Epic epic2 = new Epic(taskManager.getTaskId(), "Epic2", "Description Epic2", Status.NEW, new ArrayList<>());
+        Epic epic2 = new Epic(taskManager.getTaskId(), Type.EPIC,"Epic2", "Description Epic2", Status.NEW, new ArrayList<>());
 
         // Создание задач, подзадач, эпиков в менеджере
         taskManager.createTask(task1);
@@ -67,7 +64,7 @@ public class Main {
 
 
     // Печать задач всех типов
-    private static void printAllTasks(TaskManager manager) {
+   private static void printAllTasks(TaskManager manager) {
         System.out.println("Задачи:");
         for (Task task : manager.getListOfTasks()) {
             System.out.println(task);

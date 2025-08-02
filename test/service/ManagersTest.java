@@ -2,6 +2,7 @@ package service;
 
 import model.Status;
 import model.Task;
+import model.Type;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -16,7 +17,7 @@ class ManagersTest {
     @BeforeEach
     void init() {
         taskManager = Managers.getDefault();
-        task = new Task(1, "Task", "Task description", Status.NEW);
+        task = new Task(1, Type.TASK, "Task", "Task description", Status.NEW);
         taskManager.createTask(task);
     }
 
@@ -33,4 +34,5 @@ class ManagersTest {
         taskManager.getTask(1);
         assertNotNull(historyManager.getHistory());
     }
+
 }
