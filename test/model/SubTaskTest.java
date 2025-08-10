@@ -8,13 +8,13 @@ import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class SubTaskTest {
+public class SubTaskTest {
 
-    TaskManager taskManager = new InMemoryTaskManager();
+  private final TaskManager taskManager = new InMemoryTaskManager();
 
-    Epic epic1 = new Epic(taskManager.getTaskId(), Type.EPIC, "Epic1", "Description Epic1", Status.NEW, new ArrayList<>());
-    SubTask subTask1 = new SubTask(1, Type.SUBTASK, "Subtask1, Epic1", "Description Sub1 Ep1", Status.NEW, epic1.getId());
-    SubTask subTask2 = new SubTask(1, Type.SUBTASK, "Subtask2, Epic1", "Description Sub2 Ep1", Status.NEW, epic1.getId());
+  private final Epic epic1 = new Epic(taskManager.getTaskId(), Type.EPIC, "Epic1", "Description Epic1", Status.NEW, new ArrayList<>());
+  private final SubTask subTask1 = new SubTask(1, Type.SUBTASK, "Subtask1, Epic1", "Description Sub1 Ep1", Status.NEW, epic1.getId());
+  private final SubTask subTask2 = new SubTask(1, Type.SUBTASK, "Subtask2, Epic1", "Description Sub2 Ep1", Status.NEW, epic1.getId());
 
     // Подзадачи равны, если их идентификаторы равны
     @Test

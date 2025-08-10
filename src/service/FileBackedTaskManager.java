@@ -8,38 +8,14 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
-    File file;
+    public File file;
 
     public FileBackedTaskManager(File file) {
         this.file = file;
     }
 
-    public static void main(String[] args) throws IOException {
-
-        // Пользовательский сценарий
-        File file = File.createTempFile("file-backed-task-manager", ".csv");
-        FileBackedTaskManager fileBackedTaskManager = new FileBackedTaskManager(file);
-
-        Task task = new Task(1, Type.TASK, "Task", "Task description", Status.NEW);
-        Epic epic = new Epic(2, Type.EPIC, "Epic", "Description Epic", Status.NEW, new ArrayList<>());
-        SubTask subTask = new SubTask(3, Type.SUBTASK, "Subtask Epic", "Description Sub Ep", Status.NEW, epic.getId());
-
-        fileBackedTaskManager.createTask(task);
-        fileBackedTaskManager.createEpic(epic);
-        fileBackedTaskManager.createSubTask(subTask);
-
-        fileBackedTaskManager.save();
-
-        FileBackedTaskManager fileBackedTaskManagerFromFile = loadFromFile(file);
-
-        System.out.println(fileBackedTaskManagerFromFile.getTask(1));
-        System.out.println(fileBackedTaskManagerFromFile.getEpic(2));
-        System.out.println(fileBackedTaskManagerFromFile.getSubTask(3));
-
-    }
-
-    static FileBackedTaskManager loadFromFile(File file) {
-        FileBackedTaskManager fileBackedTaskManager = new FileBackedTaskManager(file);
+    public static FileBackedTaskManager loadFromFile(File file) throws IOException {
+        FileBackedTaskManager fileBackedTaskManager = Managers.getFileBacked();
 
         try {
             String allTasks = Files.readString(file.toPath());
@@ -48,10 +24,12 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             for (int i = 1; i < tasks.length; i++) {
                 Task task = fileBackedTaskManager.fromString(tasks[i]);
 
-                switch (task.getType()) {
-                    case TASK -> fileBackedTaskManager.createTask(task);
-                    case EPIC -> fileBackedTaskManager.createEpic((Epic) task);
-                    case SUBTASK -> fileBackedTaskManager.createSubTask((SubTask) task);
+                if (task != null) {
+                    switch (task.getType()) {
+                        case TASK -> fileBackedTaskManager.createTask(task);
+                        case EPIC -> fileBackedTaskManager.createEpic((Epic) task);
+                        case SUBTASK -> fileBackedTaskManager.createSubTask((SubTask) task);
+                    }
                 }
 
             }
@@ -86,7 +64,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     }
 
-    String toString(Task task) {
+    private String toString(Task task) {
         String result = String.format("%s,%s,%s,%s,%s,", task.getId(), task.getType(), task.getName(), task.getDescription(), task.getStatus());
 
         if (task.getType() == Type.SUBTASK) {
@@ -96,7 +74,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         return result;
     }
 
-    Task fromString(String value) {
+    private Task fromString(String value) {
         String[] values = value.split(",");
         int id = Integer.parseInt(values[0]);
         Type type = Type.valueOf(values[1]);

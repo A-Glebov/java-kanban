@@ -11,15 +11,15 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class InMemoryHistoryManagerTest {
+public class InMemoryHistoryManagerTest {
 
-    HistoryManager historyManager;
-    Task task1;
-    Task task2;
-    Task task3;
+    private HistoryManager historyManager;
+    private Task task1;
+    private Task task2;
+    private Task task3;
 
     @BeforeEach
-    void init() {
+    public void init() {
         historyManager = Managers.getDefaultHistory();
 
         task1 = new Task(1, Type.TASK, "Task1", "Task description", Status.NEW);
@@ -34,27 +34,27 @@ class InMemoryHistoryManagerTest {
 
     // Задачи добавляются в историю
     @Test
-    void isTaskAddedToHistory() {
+    public void isTaskAddedToHistory() {
         assertEquals(3, historyManager.getHistory().size());
     }
 
     // Размер не увеличился при добавлении той же задачи
     @Test
-    void sizeHistoryDoesNotIncreaseWhenAddingSameElement() {
+    public void sizeHistoryDoesNotIncreaseWhenAddingSameElement() {
         historyManager.add(task2);
         assertEquals(3, historyManager.getHistory().size());
     }
 
     // Задача добавилась в конец
     @Test
-    void taskShouldBeAddedToEndOfList() {
+    public void taskShouldBeAddedToEndOfList() {
         historyManager.add(task2);
         assertEquals(task2, historyManager.getHistory().getLast());
     }
 
     // В истории не должно быть повторяющихся задач
     @Test
-    void shouldNotBeIdenticalTasksInHistory() {
+    public void shouldNotBeIdenticalTasksInHistory() {
         List<Task> list = new ArrayList<>();
         historyManager.add(task2);
 
@@ -70,7 +70,7 @@ class InMemoryHistoryManagerTest {
 
     // Удаление первого элемента истории
     @Test
-    void deleteFirst() {
+    public void deleteFirst() {
         historyManager.remove(1);
         assertEquals(2, historyManager.getHistory().size());
         assertEquals(task2, historyManager.getHistory().getFirst());
@@ -80,7 +80,7 @@ class InMemoryHistoryManagerTest {
 
     // Удаление элемента из середины истории
     @Test
-    void deleteFromMiddle() {
+    public void deleteFromMiddle() {
         historyManager.remove(2);
         assertEquals(2, historyManager.getHistory().size());
         assertEquals(task1, historyManager.getHistory().getFirst());
@@ -90,7 +90,7 @@ class InMemoryHistoryManagerTest {
 
     // Удаление последнего элемента истории
     @Test
-    void deleteLast() {
+    public void deleteLast() {
         historyManager.remove(3);
         assertEquals(2, historyManager.getHistory().size());
         assertEquals(task1, historyManager.getHistory().getFirst());

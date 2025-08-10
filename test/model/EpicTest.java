@@ -9,21 +9,21 @@ import java.util.ArrayList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
-class EpicTest {
+public class EpicTest {
 
-    TaskManager taskManager = new InMemoryTaskManager();
-    Epic epic1 = new Epic(1, Type.EPIC, "Epic1", "Description Epic1", Status.NEW, new ArrayList<>());
-    Epic epic2 = new Epic(1, Type.EPIC, "Epic2", "Description Epic2", Status.NEW, new ArrayList<>());
+    private final TaskManager taskManager = new InMemoryTaskManager();
+    private final Epic epic1 = new Epic(1, Type.EPIC, "Epic1", "Description Epic1", Status.NEW, new ArrayList<>());
+    private final Epic epic2 = new Epic(1, Type.EPIC, "Epic2", "Description Epic2", Status.NEW, new ArrayList<>());
 
     // Эпики равны если равен их идентификаторы равны
     @Test
-    void epicsShouldBeEqualsIfIdEquals() {
+    public void epicsShouldBeEqualsIfIdEquals() {
         assertEquals(epic1, epic2);
     }
 
     // Проверка, что эпик нельзя добавить в самого себя в виде подзадачи
     @Test
-    void epicCannotContainItselfAsSubTask() {
+    public void epicCannotContainItselfAsSubTask() {
         Epic epic = new Epic(1, Type.EPIC, "Epic", "Description", Status.NEW, new ArrayList<>());
         SubTask validSubTask = new SubTask(2, Type.SUBTASK, "SubTaskValid", "Valid", Status.NEW, epic.getId());
         SubTask invalidSubTask = new SubTask(epic.getId(), Type.SUBTASK, "SubTaskInvalid", "Invalid", Status.NEW, epic.getId());

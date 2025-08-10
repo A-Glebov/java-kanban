@@ -1,5 +1,8 @@
 package service;
 
+import java.io.File;
+import java.io.IOException;
+
 public class Managers {
 
     public static TaskManager getDefault() {
@@ -10,4 +13,8 @@ public class Managers {
         return new InMemoryHistoryManager();
     }
 
+    public static FileBackedTaskManager getFileBacked() throws IOException {
+        File file = File.createTempFile("file-backed-task-manager", ".csv");
+        return new FileBackedTaskManager(file);
+    }
 }
