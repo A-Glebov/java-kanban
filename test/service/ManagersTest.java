@@ -2,35 +2,37 @@ package service;
 
 import model.Status;
 import model.Task;
+import model.Type;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class ManagersTest {
+public class ManagersTest {
 
     // Проверяем что Manager возвращает проинициализированные и готовые к работе экземпляры менеджеров;
-    TaskManager taskManager;
-    Task task;
+    private TaskManager taskManager;
+    private Task task;
 
     @BeforeEach
-    void init() {
+    public void init() {
         taskManager = Managers.getDefault();
-        task = new Task(1, "Task", "Task description", Status.NEW);
+        task = new Task(1, Type.TASK, "Task", "Task description", Status.NEW);
         taskManager.createTask(task);
     }
 
     @Test
-    void getDefault() {
+    public void getDefault() {
         assertNotNull(taskManager, "Объект не создан");
         assertNotNull(taskManager.getTask(1), "Менеджер не возвращает задачу");
     }
 
     @Test
-    void getDefaultHistory() {
+    public void getDefaultHistory() {
         HistoryManager historyManager = Managers.getDefaultHistory();
         assertNotNull(historyManager, "Объект не создан");
         taskManager.getTask(1);
         assertNotNull(historyManager.getHistory());
     }
+
 }

@@ -15,13 +15,16 @@ public class InMemoryHistoryManager implements HistoryManager {
     // Создание Node
     private void linkLast(Task task) {
         Node newNode = new Node(last, task, null);
+
         if (first == null) {
             first = newNode;
             first.prev = null;
         } else {
             last.next = newNode;
         }
+
         last = newNode;
+
     }
 
     // Удаление Node
@@ -30,6 +33,7 @@ public class InMemoryHistoryManager implements HistoryManager {
         if (node == null) {
             return;
         }
+
         if (node.prev == null) {
             first = first.next;
 
@@ -46,6 +50,7 @@ public class InMemoryHistoryManager implements HistoryManager {
             node.prev.next = node.next;
             node.next.prev = node.prev;
         }
+
     }
 
     // Получение списка задач из Node
