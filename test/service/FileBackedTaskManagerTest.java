@@ -55,7 +55,8 @@ public class FileBackedTaskManagerTest {
 
         fileBackedTaskManager.save();
 
-        FileBackedTaskManager fileBackedTaskManagerFromFile = FileBackedTaskManager.loadFromFile(fileBackedTaskManager.file);
+        FileBackedTaskManager fileBackedTaskManagerFromFile = FileBackedTaskManager
+                .loadFromFile(fileBackedTaskManager.file);
 
         assertEquals(fileBackedTaskManager.getTask(1), fileBackedTaskManagerFromFile.getTask(1), "Задачи не совпадают");
         assertEquals(fileBackedTaskManager.getEpic(2), fileBackedTaskManagerFromFile.getEpic(2), "Эпики не совпадают");
@@ -67,9 +68,8 @@ public class FileBackedTaskManagerTest {
     public void testManagerSaveExceptionSaveToNonExistentFile() {
         fileBackedTaskManager.file = new File("C:\\non-existent-file.csv");
 
-        assertThrows(ManagerSaveException.class, () -> {
-            fileBackedTaskManager.save();
-        }, "Сохранение данных в несуществующий файл должно приводить к исключению");
+        assertThrows(ManagerSaveException.class, () -> fileBackedTaskManager
+                .save(), "Сохранение данных в несуществующий файл должно приводить к исключению");
 
     }
 
@@ -77,9 +77,8 @@ public class FileBackedTaskManagerTest {
     public void testManagerSaveExceptionLoadFromNonExistentFile() {
         File nonExistentFile = new File("C:\\non-existent-file.csv");
 
-        assertThrows(ManagerSaveException.class, () -> {
-            fileBackedTaskManager = FileBackedTaskManager.loadFromFile(nonExistentFile);
-        }, "Загрузка данных из несуществующего файла должно приводить к исключению");
+        assertThrows(ManagerSaveException.class, () -> fileBackedTaskManager = FileBackedTaskManager
+                .loadFromFile(nonExistentFile), "Загрузка данных из несуществующего файла должно приводить к исключению");
 
     }
 
