@@ -5,6 +5,8 @@ import model.*;
 
 import java.io.*;
 import java.nio.file.Files;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
@@ -34,8 +36,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
             }
 
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
         } catch (IOException e) {
             throw new ManagerSaveException("Ошибка во время чтения из файла");
         }
@@ -52,7 +52,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         allTasks.addAll(getListOfSubTask());
 
         try (FileWriter fileWriter = new FileWriter(file)) {
-            fileWriter.write("id,type,name,status,description,epic" + '\n');
+            fileWriter.write("id,type,name,description,status,start-time,end-time,duration,epic" + '\n');
 
             for (Task task : allTasks) {
                 fileWriter.write(toString(task) + '\n');
@@ -65,7 +65,9 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     private String toString(Task task) {
-        String result = String.format("%s,%s,%s,%s,%s,", task.getId(), task.getType(), task.getName(), task.getDescription(), task.getStatus());
+        String result = String.format("%s,%s,%s,%s,%s,%s,%s,%s,",
+                task.getId(), task.getType(), task.getName(), task.getDescription(),
+                task.getStatus(), task.getStartTime(), task.getEndTime(), task.getDuration());
 
         if (task.getType() == Type.SUBTASK) {
             result = result + String.format("%s,", ((SubTask) task).getEpicId());
@@ -81,14 +83,17 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         String name = values[2];
         String description = values[3];
         Status status = Status.valueOf(values[4]);
+        LocalDateTime startTime = LocalDateTime.parse(values[5]);
+        LocalDateTime endTime = LocalDateTime.parse(values[6]);
+        Duration duration = Duration.parse(values[7]);
 
         if (type == Type.TASK) {
-            return new Task(id, type, name, description, status);
+            return new Task(id, type, name, description, status, startTime, duration);
         } else if (type == Type.EPIC) {
-            return new Epic(id, type, name, description, status, new ArrayList<>());
+            return new Epic(id, type, name, description, status, startTime, duration, new ArrayList<>());
         } else if (type == Type.SUBTASK) {
-            int epicId = Integer.parseInt(values[5]);
-            return new SubTask(id, type, name, description, status, epicId);
+            int epicId = Integer.parseInt(values[8]);
+            return new SubTask(id, type, name, description, status, startTime, duration, epicId);
         } else {
             return null;
         }

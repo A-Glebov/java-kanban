@@ -7,6 +7,7 @@ import model.Task;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.TreeSet;
 
 public interface TaskManager {
     //Генерация идентификатора задач всех типов
@@ -74,8 +75,13 @@ public interface TaskManager {
     void deleteSubTaskById(int subTaskId);
 
     //получение списка подзадач определенного эпика
-    ArrayList<SubTask> getListOfSubtaskOfEpic(Epic epic);
+    List<SubTask> getListOfSubtaskOfEpic(Epic epic);
 
     // Получение истории просмотров
     List<Task> getHistory();
+
+    TreeSet<Task> getPrioritizedTasks();
+
+    boolean validateTaskByDateTime(Task task);
+
 }
