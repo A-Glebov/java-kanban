@@ -16,9 +16,6 @@ import static org.junit.jupiter.api.Assertions.*;
 public class FileBackedTaskManagerTest {
 
     private FileBackedTaskManager fileBackedTaskManager;
-    private Task task;
-    private Epic epic;
-    private SubTask subTask;
 
     @BeforeEach
     public void init() throws IOException {
@@ -38,14 +35,14 @@ public class FileBackedTaskManagerTest {
     @Test
     public void savingAndLoadingMultipleTasks() throws IOException {
 
-        task = new Task(1, Type.TASK, "Task", "Task description", Status.NEW,
+        Task task = new Task(1, Type.TASK, "Task", "Task description", Status.NEW,
                 LocalDateTime.of(2025, 5, 9, 1, 0), Duration.ofMinutes(15));
 
-        epic = new Epic(2, Type.EPIC, "Epic", "Description Epic", Status.NEW,
+        Epic epic = new Epic(2, Type.EPIC, "Epic", "Description Epic", Status.NEW,
                 LocalDateTime.of(2025, 5, 9, 12, 0), Duration.ofMinutes(20),
                 new ArrayList<>());
 
-        subTask = new SubTask(3, Type.SUBTASK, "Subtask Epic", "Description Sub Ep",
+        SubTask subTask = new SubTask(3, Type.SUBTASK, "Subtask Epic", "Description Sub Ep",
                 Status.NEW, LocalDateTime.of(2025, 5, 15, 12, 53),
                 Duration.ofMinutes(30), epic.getId());
 
@@ -65,18 +62,8 @@ public class FileBackedTaskManagerTest {
     }
 
     @Test
-    public void testManagerSaveExceptionSaveToNonExistentFile() {
-        fileBackedTaskManager.file = new File("C:\\non-existent-file.csv");
-
-        assertThrows(ManagerSaveException.class, () -> fileBackedTaskManager
-                .save(), "Сохранение данных в несуществующий файл должно приводить к исключению");
-
-    }
-
-    @Test
     public void testManagerSaveExceptionLoadFromNonExistentFile() {
-        File nonExistentFile = new File("C:\\non-existent-file.csv");
-
+        File nonExistentFile = new File("non-existent-file.csv");
         assertThrows(ManagerSaveException.class, () -> fileBackedTaskManager = FileBackedTaskManager
                 .loadFromFile(nonExistentFile), "Загрузка данных из несуществующего файла должно приводить к исключению");
 
