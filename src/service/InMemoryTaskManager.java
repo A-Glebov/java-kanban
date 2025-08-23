@@ -17,7 +17,12 @@ public class InMemoryTaskManager implements TaskManager {
     private final HashMap<Integer, Epic> epics = new HashMap<>();
     private final HashMap<Integer, SubTask> subtasks = new HashMap<>();
 
+    TreeSet<Task> prioritizedTasks = new TreeSet<>(Comparator
+            .comparing(Task::getStartTime, Comparator.nullsLast(Comparator.naturalOrder()))
+            .thenComparing(Task::getId));
+
     private final HistoryManager historyManager = Managers.getDefaultHistory();
+
 
     private void setEpicDataTime(Epic epic) {
         LocalDateTime startTime;
@@ -52,16 +57,9 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public TreeSet<Task> getPrioritizedTasks() {
-
-        TreeSet<Task> prioritizedTasks = new TreeSet<>(Comparator
-                .comparing(Task::getStartTime, Comparator.nullsLast(Comparator.naturalOrder()))
-                .thenComparing(Task::getId));
-
-        prioritizedTasks.addAll(getListOfTasks());
-        prioritizedTasks.addAll(getListOfSubTask());
-
-        return prioritizedTasks;
+    public List<Task> getPrioritizedTasks(Task task) {
+        prioritizedTasks.add(task);
+        return new ArrayList<>(prioritizedTasks);
     }
 
 
@@ -74,7 +72,8 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public boolean validateTaskByDateTime(Task task) {
-        return getPrioritizedTasks().stream().anyMatch(existTask -> checkTaskForIntersectionInTime(task, existTask));
+        return prioritizedTasks.stream()
+                .anyMatch(existTask -> checkTaskForIntersectionInTime(task, existTask));
     }
 
     //Генерация идентификатора задач всех типов
@@ -118,13 +117,13 @@ public class InMemoryTaskManager implements TaskManager {
         return new ArrayList<>(subtasks.values());
     }
 
-
     // Б. Удаление всех задач
     @Override
     public void deleteAllTasks() {
         for (Integer id : tasks.keySet()) {
             historyManager.remove(id);
         }
+        prioritizedTasks.clear();
         tasks.clear();
     }
 
@@ -143,7 +142,7 @@ public class InMemoryTaskManager implements TaskManager {
         for (Integer id : subtasks.keySet()) {
             historyManager.remove(id);
         }
-
+        prioritizedTasks.clear();
         subtasks.clear(); // очищаем список всех подзадач
 
         for (Integer id : epics.keySet()) {
@@ -153,25 +152,30 @@ public class InMemoryTaskManager implements TaskManager {
 
     }
 
-
     //С. Получение задачи по идентификатору
     @Override
     public Task getTask(int id) {
-        historyManager.add(tasks.get(id)); // Добавляем в историю
+        if (tasks.containsKey(id)) {
+            historyManager.add(tasks.get(id));
+        }// Добавляем в историю
         return tasks.get(id);
     }
 
     //Получение эпика по идентификатору
     @Override
     public Epic getEpic(int id) {
-        historyManager.add(epics.get(id)); // Добавляем в историю
+        if (epics.containsKey(id)) {
+            historyManager.add(epics.get(id));
+        }// Добавляем в историю
         return epics.get(id);
     }
 
     // Получение подзадачи по идентификатору
     @Override
     public SubTask getSubTask(int id) {
-        historyManager.add(subtasks.get(id)); //Добавляем в историю
+        if (subtasks.containsKey(id)) {
+            historyManager.add(subtasks.get(id));
+        }//Добавляем в историю
         return subtasks.get(id);
     }
 
@@ -181,6 +185,7 @@ public class InMemoryTaskManager implements TaskManager {
     public void createTask(Task task) {
         if (!validateTaskByDateTime(task)) {
             tasks.put(task.getId(), task);
+            getPrioritizedTasks(task);
         }
     }
 
@@ -195,6 +200,7 @@ public class InMemoryTaskManager implements TaskManager {
     public void createSubTask(SubTask subTask) {
         if (!validateTaskByDateTime(subTask)) {
             subtasks.put(subTask.getId(), subTask); // Сохранение задачи в список всех подзадач
+            getPrioritizedTasks(subTask);
             Epic epic = epics.get(subTask.getEpicId());// Получения эпика текущей подзадачи
             epic.getSubTaskIdList().add(subTask.getId()); // Добавление ID подзадачи в список ID подзадач эпика
             updateEpicStatus(epic);// обновление эпика
@@ -208,6 +214,7 @@ public class InMemoryTaskManager implements TaskManager {
         if (!validateTaskByDateTime(task)) {
             tasks.remove(task.getId());
             tasks.put(task.getId(), task);
+            getPrioritizedTasks(task);
         }
     }
 
@@ -261,6 +268,7 @@ public class InMemoryTaskManager implements TaskManager {
         if (!validateTaskByDateTime(subTask)) {
             int subTaskId = subTask.getId();
             subtasks.put(subTaskId, subTask);
+            getPrioritizedTasks(subTask);
             Epic epic = epics.get(subTask.getEpicId());
             updateEpicStatus(epic); // Обновляем статус эпика
             setEpicDataTime(epic); //Обновляем время эпика
@@ -270,38 +278,45 @@ public class InMemoryTaskManager implements TaskManager {
     //F. Удаление по идентификатору
     @Override
     public void deleteTaskById(int taskId) {
-        historyManager.remove(taskId);  // Удаление из истории
-        tasks.remove(taskId);
+        if(tasks.containsKey(taskId)) {
+            historyManager.remove(taskId);  // Удаление из истории
+            prioritizedTasks.remove(tasks.get(taskId));
+            tasks.remove(taskId);
+        }
     }
 
     // Удаление эпик по Id
     @Override
     public void deleteEpicById(int epicId) {
-        Epic epic = epics.get(epicId);
+        if(epics.containsKey(epicId)) {
+            Epic epic = epics.get(epicId);
 
-        for (Integer subId : epic.getSubTaskIdList()) { // Удаляем подзадачи эпика из списка всех подзадач
-            historyManager.remove(subId); // Удаление из истории
-            subtasks.remove(subId);
+            for (Integer subId : epic.getSubTaskIdList()) { // Удаляем подзадачи эпика из списка всех подзадач
+                historyManager.remove(subId); // Удаление из истории
+                subtasks.remove(subId);
+            }
+
+            historyManager.remove(epicId);
+            epics.remove(epicId);
         }
-
-        historyManager.remove(epicId);
-        epics.remove(epicId);
 
     }
 
     // Удаление подзадачи по Id
     @Override
     public void deleteSubTaskById(int subTaskId) {
-        SubTask subTask = subtasks.get(subTaskId);
-        Epic epic = epics.get(subTask.getEpicId()); // Получение ID эпика текущей подзадачи
-        epic.getSubTaskIdList().remove((Integer) subTaskId); // Удаление ID подзадачи из списка ID подзадач текущего эпика
-        updateEpicStatus(epic); // Проверка и изменение статуса эпика
-        setEpicDataTime(epic);
+        if (subtasks.containsKey(subTaskId)) {
+            SubTask subTask = subtasks.get(subTaskId);
+            Epic epic = epics.get(subTask.getEpicId()); // Получение ID эпика текущей подзадачи
+            epic.getSubTaskIdList().remove((Integer) subTaskId); // Удаление ID подзадачи из списка ID подзадач текущего эпика
+            updateEpicStatus(epic); // Проверка и изменение статуса эпика
+            setEpicDataTime(epic);
 
-        historyManager.remove(subTaskId); // Удаление из истории
-        subtasks.remove(subTaskId); // Удаление из списка подзадач
+            historyManager.remove(subTaskId); // Удаление из истории
+            prioritizedTasks.remove(subtasks.get(subTaskId));
+            subtasks.remove(subTaskId); // Удаление из списка подзадач
+        }
     }
-
 
     //получение списка подзадач определенного эпика
     @Override
