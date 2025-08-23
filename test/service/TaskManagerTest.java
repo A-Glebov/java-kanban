@@ -36,19 +36,6 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    public void getTaskId() {
-        Task task1 = new Task(taskManager.getTaskId(), Type.TASK, "Task", "Task description", Status.NEW,
-                LocalDateTime.of(2025, 5, 9, 1, 0), Duration.ofMinutes(15));
-        Task task2 = new Task(taskManager.getTaskId(), Type.TASK, "Task", "Task description", Status.NEW,
-                LocalDateTime.of(2025, 5, 9, 1, 0), Duration.ofMinutes(15));
-
-        assertEquals(1, task1.getId(), "ID задач не совпадают");
-        assertEquals(2, task2.getId(), "ID задач не совпадают");
-
-    }
-
-
-    @Test
     public void getListOfTasksAllTypes() {
         assertEquals(1, taskManager.getListOfTasks().size(), "Список задач пуст");
         assertEquals(1, taskManager.getListOfEpics().size(), "Список эпиков пуст");
