@@ -21,7 +21,7 @@ public class ManagersTest {
         taskManager = Managers.getDefault();
 
         Task task = new Task(1, Type.TASK, "Task", "Task description", Status.NEW,
-                LocalDateTime.of(2025,5,9,1,0), Duration.ofMinutes(15));
+                LocalDateTime.of(2025, 5, 9, 1, 0), Duration.ofMinutes(15));
 
         taskManager.createTask(task);
     }

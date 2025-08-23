@@ -7,7 +7,6 @@ import model.Task;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.TreeSet;
 
 public interface TaskManager {
     //Генерация идентификатора задач всех типов
@@ -80,7 +79,7 @@ public interface TaskManager {
     // Получение истории просмотров
     List<Task> getHistory();
 
-    TreeSet<Task> getPrioritizedTasks();
+    List<Task> getPrioritizedTasks(Task task);
 
     boolean validateTaskByDateTime(Task task);
 
