@@ -57,8 +57,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public List<Task> getPrioritizedTasks(Task task) {
-        prioritizedTasks.add(task);
+    public List<Task> getPrioritizedTasks() {
         return new ArrayList<>(prioritizedTasks);
     }
 
@@ -81,22 +80,6 @@ public class InMemoryTaskManager implements TaskManager {
     public int getTaskId() {
         ++taskId;
         return taskId;
-    }
-
-    // Геттеры для hashmap в которых хранятся задачи всех типов
-    @Override
-    public HashMap<Integer, Task> getTasks() {
-        return tasks;
-    }
-
-    @Override
-    public HashMap<Integer, Epic> getEpics() {
-        return epics;
-    }
-
-    @Override
-    public HashMap<Integer, SubTask> getSubtasks() {
-        return subtasks;
     }
 
     // А. Получение списка задач
@@ -195,7 +178,7 @@ public class InMemoryTaskManager implements TaskManager {
     public void createTask(Task task) {
         if (!validateTaskByDateTime(task)) {
             tasks.put(task.getId(), task);
-            getPrioritizedTasks(task);
+            prioritizedTasks.add(task);
         }
     }
 
@@ -210,7 +193,7 @@ public class InMemoryTaskManager implements TaskManager {
     public void createSubTask(SubTask subTask) {
         if (!validateTaskByDateTime(subTask)) {
             subtasks.put(subTask.getId(), subTask); // Сохранение задачи в список всех подзадач
-            getPrioritizedTasks(subTask);
+            prioritizedTasks.add(subTask);
             Epic epic = epics.get(subTask.getEpicId());// Получения эпика текущей подзадачи
             epic.getSubTaskIdList().add(subTask.getId()); // Добавление ID подзадачи в список ID подзадач эпика
             updateEpicStatus(epic);// обновление эпика
@@ -224,7 +207,7 @@ public class InMemoryTaskManager implements TaskManager {
         if (!validateTaskByDateTime(task)) {
             tasks.remove(task.getId());
             tasks.put(task.getId(), task);
-            getPrioritizedTasks(task);
+            prioritizedTasks.add(task);
         }
     }
 
@@ -278,7 +261,7 @@ public class InMemoryTaskManager implements TaskManager {
         if (!validateTaskByDateTime(subTask)) {
             int subTaskId = subTask.getId();
             subtasks.put(subTaskId, subTask);
-            getPrioritizedTasks(subTask);
+            prioritizedTasks.add(subTask);
             Epic epic = epics.get(subTask.getEpicId());
             updateEpicStatus(epic); // Обновляем статус эпика
             setEpicDataTime(epic); //Обновляем время эпика

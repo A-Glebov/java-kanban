@@ -195,7 +195,8 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     public void taskShouldBeFirstInPriority() {
         Task newTask = new Task(4, Type.TASK, "NewTask", "NewTask description", Status.NEW,
                 LocalDateTime.of(2025, 5, 9, 0, 0), Duration.ofMinutes(15));
-        List<Task> tasksByPriority = taskManager.getPrioritizedTasks(newTask);
+        taskManager.createTask(newTask);
+        List<Task> tasksByPriority = taskManager.getPrioritizedTasks();
 
         assertEquals(tasksByPriority.getFirst(), newTask, "Задача должна получить наивысший приоритет");
 
@@ -205,7 +206,8 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     public void taskShouldBeLastInPriority() {
         Task newTask = new Task(4, Type.TASK, "NewTask", "NewTask description", Status.NEW,
                 LocalDateTime.of(2025, 5, 16, 0, 0), Duration.ofMinutes(15));
-        List<Task> tasksByPriority = taskManager.getPrioritizedTasks(newTask);
+        taskManager.createTask(newTask);
+        List<Task> tasksByPriority = taskManager.getPrioritizedTasks();
 
         assertEquals(tasksByPriority.getLast(), newTask, "Задача должна получить низший приоритет");
 
@@ -215,7 +217,8 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     public void taskShouldBeSecondInPriority() {
         Task newTask = new Task(4, Type.TASK, "NewTask", "NewTask description", Status.NEW,
                 LocalDateTime.of(2025, 5, 12, 0, 0), Duration.ofMinutes(15));
-        List<Task> tasksByPriority = taskManager.getPrioritizedTasks(newTask);
+        taskManager.createTask(newTask);
+        List<Task> tasksByPriority = taskManager.getPrioritizedTasks();
 
         assertEquals(tasksByPriority.get(1), newTask, "Задача должна быть второй по приоритету");
 
@@ -225,6 +228,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     public void taskTimeSameOfExistingTask() {
         Task newTask = new Task(4, Type.TASK, "NewTask", "NewTask description", Status.NEW,
                 LocalDateTime.of(2025, 5, 9, 1, 0), Duration.ofMinutes(15));
+        taskManager.createTask(newTask);
         taskManager.createTask(newTask);
 
         assertEquals(1, taskManager.getListOfTasks().size(), "Список не должен увеличиваться");
