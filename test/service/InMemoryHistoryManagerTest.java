@@ -6,6 +6,8 @@ import model.Type;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,9 +24,14 @@ public class InMemoryHistoryManagerTest {
     public void init() {
         historyManager = Managers.getDefaultHistory();
 
-        task1 = new Task(1, Type.TASK, "Task1", "Task description", Status.NEW);
-        task2 = new Task(2, Type.TASK, "Task2", "Task description", Status.NEW);
-        task3 = new Task(3, Type.TASK, "Task3", "Task description", Status.NEW);
+        task1 = new Task(1, Type.TASK, "Task1", "Task description1", Status.NEW,
+                LocalDateTime.of(2025, 5, 9, 1, 0), Duration.ofMinutes(15));
+
+        task2 = new Task(2, Type.TASK, "Task2", "Task description2", Status.NEW,
+                LocalDateTime.of(2025, 5, 9, 2, 0), Duration.ofMinutes(15));
+
+        task3 = new Task(3, Type.TASK, "Task3", "Task description3", Status.NEW,
+                LocalDateTime.of(2025, 5, 9, 3, 0), Duration.ofMinutes(15));
 
         historyManager.add(task1);
         historyManager.add(task2);

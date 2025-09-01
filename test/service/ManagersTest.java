@@ -6,18 +6,23 @@ import model.Type;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ManagersTest {
 
     // Проверяем что Manager возвращает проинициализированные и готовые к работе экземпляры менеджеров;
     private TaskManager taskManager;
-    private Task task;
 
     @BeforeEach
     public void init() {
         taskManager = Managers.getDefault();
-        task = new Task(1, Type.TASK, "Task", "Task description", Status.NEW);
+
+        Task task = new Task(1, Type.TASK, "Task", "Task description", Status.NEW,
+                LocalDateTime.of(2025, 5, 9, 1, 0), Duration.ofMinutes(15));
+
         taskManager.createTask(task);
     }
 

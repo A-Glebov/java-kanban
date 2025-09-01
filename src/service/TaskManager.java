@@ -5,19 +5,11 @@ import model.SubTask;
 import model.Task;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public interface TaskManager {
     //Генерация идентификатора задач всех типов
     int getTaskId();
-
-    // Геттеры для hashmap в которых хранятся задачи всех типов
-    HashMap<Integer, Task> getTasks();
-
-    HashMap<Integer, Epic> getEpics();
-
-    HashMap<Integer, SubTask> getSubtasks();
 
     // А. Получение списка задач
     ArrayList<Task> getListOfTasks();
@@ -74,8 +66,13 @@ public interface TaskManager {
     void deleteSubTaskById(int subTaskId);
 
     //получение списка подзадач определенного эпика
-    ArrayList<SubTask> getListOfSubtaskOfEpic(Epic epic);
+    List<SubTask> getListOfSubtaskOfEpic(Epic epic);
 
     // Получение истории просмотров
     List<Task> getHistory();
+
+    List<Task> getPrioritizedTasks();
+
+    boolean validateTaskByDateTime(Task task);
+
 }

@@ -1,53 +1,56 @@
 package service;
 
-import model.*;
+import exceptions.ManagerSaveException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class FileBackedTaskManagerTest {
+public class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
 
-    private FileBackedTaskManager fileBackedTaskManager;
-    private Task task;
-    private Epic epic;
-    private SubTask subTask;
-
+    @Test
     @BeforeEach
+    @Override
     public void init() throws IOException {
-        fileBackedTaskManager = Managers.getFileBacked();
+        taskManager = Managers.getFileBacked();
+        super.init();
 
     }
 
     @Test
     public void savingAndLoadingEmptyFile() throws IOException {
-        fileBackedTaskManager.save();
-        fileBackedTaskManager = FileBackedTaskManager.loadFromFile(fileBackedTaskManager.file);
-        assertTrue(fileBackedTaskManager.file.exists(), "Файл не существует");
-        assertTrue(fileBackedTaskManager.getListOfTasks().isEmpty(), "Файл не пустой");
+        taskManager.deleteAllTasks();
+        taskManager.deleteAllEpic();
+        taskManager.deleteAllSubTask();
+
+        taskManager.save();
+        taskManager = FileBackedTaskManager.loadFromFile(taskManager.file);
+        assertTrue(taskManager.file.exists(), "Файл не существует");
+        assertTrue(taskManager.getListOfTasks().isEmpty(), "Файл не пустой");
 
     }
 
     @Test
     public void savingAndLoadingMultipleTasks() throws IOException {
-        task = new Task(1, Type.TASK, "Task", "Task description", Status.NEW);
-        epic = new Epic(2, Type.EPIC, "Epic", "Description Epic", Status.NEW, new ArrayList<>());
-        subTask = new SubTask(3, Type.SUBTASK, "Subtask Epic", "Description Sub Ep", Status.NEW, epic.getId());
+        taskManager.save();
 
-        fileBackedTaskManager.createTask(task);
-        fileBackedTaskManager.createEpic(epic);
-        fileBackedTaskManager.createSubTask(subTask);
+        FileBackedTaskManager fileBackedTaskManagerFromFile = FileBackedTaskManager
+                .loadFromFile(taskManager.file);
 
-        fileBackedTaskManager.save();
+        assertEquals(taskManager.getTask(1), fileBackedTaskManagerFromFile.getTask(1), "Задачи не совпадают");
+        assertEquals(taskManager.getEpic(2), fileBackedTaskManagerFromFile.getEpic(2), "Эпики не совпадают");
+        assertEquals(taskManager.getSubTask(3), fileBackedTaskManagerFromFile.getSubTask(3), "Подзадачи не совпадают");
 
-        FileBackedTaskManager fileBackedTaskManagerFromFile = FileBackedTaskManager.loadFromFile(fileBackedTaskManager.file);
+    }
 
-        assertEquals(fileBackedTaskManager.getTask(1), fileBackedTaskManagerFromFile.getTask(1), "Задачи не совпадают");
-        assertEquals(fileBackedTaskManager.getEpic(2), fileBackedTaskManagerFromFile.getEpic(2), "Эпики не совпадают");
-        assertEquals(fileBackedTaskManager.getSubTask(3), fileBackedTaskManagerFromFile.getSubTask(3), "Подзадачи не совпадают");
+    @Test
+    public void testManagerSaveExceptionLoadFromNonExistentFile() {
+        File nonExistentFile = new File("non-existent-file.csv");
+        assertThrows(ManagerSaveException.class, () -> taskManager = FileBackedTaskManager
+                .loadFromFile(nonExistentFile), "Загрузка данных из несуществующего файла должно приводить к исключению");
 
     }
 
