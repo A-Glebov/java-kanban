@@ -17,10 +17,10 @@ public class Main {
         FileBackedTaskManager fileBackedTaskManager = Managers.getFileBacked();
 
         Task task = new Task(1, Type.TASK, "Task", "Task description", Status.NEW,
-                LocalDateTime.of(2025,5,9,1,0), Duration.ofMinutes(15));
+                LocalDateTime.of(2025, 5, 9, 1, 0), Duration.ofMinutes(15));
 
         Epic epic = new Epic(2, Type.EPIC, "Epic", "Description Epic", Status.NEW,
-                LocalDateTime.of(2025,5,9,12,0), Duration.ofMinutes(20),
+                LocalDateTime.of(2025, 5, 9, 12, 0), Duration.ofMinutes(20),
                 new ArrayList<>());
 
         SubTask subTask = new SubTask(3, Type.SUBTASK, "Subtask Epic", "Description Sub Ep",

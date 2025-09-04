@@ -204,11 +204,10 @@ public class InMemoryTaskManager implements TaskManager {
     //E. Обновление задачи
     @Override
     public void updateTask(Task task) {
-        if (!validateTaskByDateTime(task)) {
             tasks.remove(task.getId());
             tasks.put(task.getId(), task);
             prioritizedTasks.add(task);
-        }
+
     }
 
     //Обновление эпика
