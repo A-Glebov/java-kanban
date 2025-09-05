@@ -31,26 +31,20 @@ public class HttpTaskManagerTasksTest {
     HttpClient client = HttpClient.newHttpClient();
 
     @BeforeEach
-    public void setUp() throws IOException, InterruptedException {
+    public void setUp() throws IOException {
         httpTaskServer = new HttpTaskServer(taskManager);
         httpTaskServer.start();
 
         task = new Task(1, Type.TASK, "Task", "Task description", Status.NEW,
                 LocalDateTime.of(2025, 1, 1, 1, 0), Duration.ofMinutes(15));
 
-        HttpRequest request1 = HttpRequest.newBuilder().uri(URI.create("http://localhost:8080/tasks"))
-                .POST(HttpRequest.BodyPublishers.ofString(gson.toJson(task))).build();
-        HttpResponse<String> response1 = client.send(request1, HttpResponse.BodyHandlers.ofString());
-
-        assertEquals(200, response1.statusCode());
+        taskManager.createTask(task);
 
     }
 
     @AfterEach
     public void shutDown() {
         taskManager.deleteAllTasks();
-        taskManager.deleteAllEpic();
-        taskManager.deleteAllSubTask();
         client.close();
         httpTaskServer.stop();
     }

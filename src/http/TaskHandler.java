@@ -18,6 +18,7 @@ public class TaskHandler extends BaseHttpHandler {
     public void handle(HttpExchange exchange) {
         String path = exchange.getRequestURI().getPath();
         String requestMethod = exchange.getRequestMethod();
+
         try {
             switch (requestMethod) {
                 case "GET" -> {
@@ -60,7 +61,7 @@ public class TaskHandler extends BaseHttpHandler {
 
                     }
 
-                    //UPDATE TASK
+                    // Обновление задачи
                     if (Pattern.matches("^/tasks/\\d+$", path)) {
                         String pathId = path.replaceFirst("/tasks/", "");
                         int id = parseId(pathId);
@@ -68,7 +69,7 @@ public class TaskHandler extends BaseHttpHandler {
                             String body = new String(exchange.getRequestBody().readAllBytes(), StandardCharsets.UTF_8);
                             Task task = gson.fromJson(body, Task.class);
 
-                            if (taskManager.getTask(id) != null) {
+                            if (taskManager.getTasks().containsKey(id)) {
                                 taskManager.updateTask(task);
                                 sendText(exchange, "Задача успешно обновлена");
                             } else {
@@ -85,7 +86,7 @@ public class TaskHandler extends BaseHttpHandler {
                         String pathId = path.replaceFirst("/tasks/", "");
                         int id = parseId(pathId);
 
-                        if (id != -1 && taskManager.getTask(id) != null) {
+                        if (id != -1 && taskManager.getTasks().containsKey(id)) {
                             taskManager.deleteTaskById(id);
                             sendText(exchange, "Задача с ID=" + id + " успешно удалена");
                         } else {

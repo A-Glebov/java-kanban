@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.regex.Pattern;
 
 public class PriorityHandler extends BaseHttpHandler {
+
     public PriorityHandler(TaskManager taskManager) {
         super(taskManager);
     }

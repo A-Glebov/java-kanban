@@ -1,6 +1,5 @@
 package service;
 
-//import adapter.DurationSerializer;
 import adapter.DurationTypeAdapter;
 import adapter.LocalDateTimeAdapter;
 import com.google.gson.Gson;
@@ -33,6 +32,6 @@ public class Managers {
                 .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
                 .registerTypeAdapter(Duration.class, new DurationTypeAdapter());
 
-        return  gsonBuilder.create();
+        return gsonBuilder.create();
     }
 }

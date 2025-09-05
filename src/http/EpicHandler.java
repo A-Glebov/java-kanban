@@ -27,12 +27,12 @@ public class EpicHandler extends BaseHttpHandler {
                         int id = parseId(pathId);
 
                         if (id != -1) {
-                            Epic epic = taskManager.getEpic(id);
+                            Epic epic = taskManager.getEpics().get(id);
                             if (epic == null) {
                                 sendNotFound(exchange, "Эпик с ID=" + id + " не найден");
                                 return;
                             }
-                            String response = gson.toJson(epic.getSubTaskIdList());
+                            String response = gson.toJson(taskManager.getListOfSubtaskOfEpic(epic));
                             sendText(exchange, response);
                             return;
                         }
@@ -61,7 +61,6 @@ public class EpicHandler extends BaseHttpHandler {
 
                 }
 
-
                 case "POST" -> {
                     // Добавление новой задачи
                     if (Pattern.matches("^/epics$", path)) {
@@ -82,7 +81,7 @@ public class EpicHandler extends BaseHttpHandler {
                         String pathId = path.replaceFirst("/epics/", "");
                         int id = parseId(pathId);
 
-                        if (id != -1 && taskManager.getEpic(id) != null) {
+                        if (id != -1 && taskManager.getEpics().containsKey(id)) {
                             taskManager.deleteEpicById(id);
                             sendText(exchange, "Эпик с ID=" + id + " успешно удален");
                         } else {

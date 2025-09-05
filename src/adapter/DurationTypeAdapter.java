@@ -14,7 +14,6 @@ public class DurationTypeAdapter extends TypeAdapter<Duration> {
         if (duration == null) {
             out.nullValue();
         } else {
-            // Сериализуем Duration в строку, например, в формате ISO-8601
             out.value(duration.toString());
         }
     }
@@ -25,30 +24,10 @@ public class DurationTypeAdapter extends TypeAdapter<Duration> {
             in.nextNull();
             return null;
         } else {
-            // Десериализуем строку обратно в Duration
             String durationString = in.nextString();
             return Duration.parse(durationString);
         }
     }
+
 }
 
-/*import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonSerializationContext;
-import com.google.gson.JsonSerializer;
-
-import java.lang.reflect.Type;
-import java.time.Duration;
-
-public class DurationSerializer implements JsonSerializer<Duration> {
-    @Override
-    public JsonElement serialize(Duration duration, Type type, JsonSerializationContext context) {
-        return context.serialize(duration.toString());
-    }
-
-   /* @Override
-    public JsonElement serialize(Duration duration, Type typeOfSrc, JsonSerializationContext context) {
-        // Преобразуем Duration в строку формата ISO-8601
-        return context.serialize(duration.toString());
-    }
-}*/

@@ -28,9 +28,10 @@ public class HttpTaskManagerHistoryTest {
     HttpClient client = HttpClient.newHttpClient();
 
     @BeforeEach
-    public void setUp() throws IOException, InterruptedException {
+    public void setUp() throws IOException {
         httpTaskServer = new HttpTaskServer(taskManager);
         httpTaskServer.start();
+
         Task task1 = new Task(1, Type.TASK, "Task1", "Task description1", Status.NEW,
                 LocalDateTime.of(2025, 1, 1, 1, 0), Duration.ofMinutes(15));
         Task task2 = new Task(2, Type.TASK, "Task2", "Task description2", Status.NEW,
@@ -38,19 +39,9 @@ public class HttpTaskManagerHistoryTest {
         Task task3 = new Task(3, Type.TASK, "Task3", "Task description3", Status.NEW,
                 LocalDateTime.of(2025, 1, 1, 3, 0), Duration.ofMinutes(15));
 
-        HttpRequest request1 = HttpRequest.newBuilder().uri(URI.create("http://localhost:8080/tasks"))
-                .POST(HttpRequest.BodyPublishers.ofString(gson.toJson(task1))).build();
-        HttpResponse<String> response1 = client.send(request1, HttpResponse.BodyHandlers.ofString());
-        HttpRequest request2 = HttpRequest.newBuilder().uri(URI.create("http://localhost:8080/tasks"))
-                .POST(HttpRequest.BodyPublishers.ofString(gson.toJson(task2))).build();
-        HttpResponse<String> response2 = client.send(request2, HttpResponse.BodyHandlers.ofString());
-        HttpRequest request3 = HttpRequest.newBuilder().uri(URI.create("http://localhost:8080/tasks"))
-                .POST(HttpRequest.BodyPublishers.ofString(gson.toJson(task3))).build();
-        HttpResponse<String> response3 = client.send(request3, HttpResponse.BodyHandlers.ofString());
-
-        assertEquals(200, response1.statusCode());
-        assertEquals(200, response2.statusCode());
-        assertEquals(200, response3.statusCode());
+        taskManager.createTask(task3);
+        taskManager.createTask(task2);
+        taskManager.createTask(task1);
 
     }
 
@@ -84,8 +75,7 @@ public class HttpTaskManagerHistoryTest {
 
     @AfterEach
     public void shutDown() {
-        taskManager.deleteAllEpic();
-        taskManager.deleteAllSubTask();
+        taskManager.deleteAllTasks();
         client.close();
         httpTaskServer.stop();
     }

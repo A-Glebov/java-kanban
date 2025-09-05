@@ -17,7 +17,7 @@ public class HttpTaskServer {
     public static final int PORT = 8080;
     private static final String URL = "http://localhost:";
     private final HttpServer httpServer;
-    TaskManager taskManager;
+    private final TaskManager taskManager;
 
     public HttpTaskServer(TaskManager taskManager) throws IOException {
         this.taskManager = taskManager;

@@ -18,6 +18,7 @@ public class SubTaskHandler extends BaseHttpHandler {
     public void handle(HttpExchange exchange) {
         String path = exchange.getRequestURI().getPath();
         String requestMethod = exchange.getRequestMethod();
+
         try {
             switch (requestMethod) {
                 case "GET" -> {
@@ -67,7 +68,7 @@ public class SubTaskHandler extends BaseHttpHandler {
                             String body = new String(exchange.getRequestBody().readAllBytes(), StandardCharsets.UTF_8);
                             SubTask subtask = gson.fromJson(body, SubTask.class);
 
-                            if (taskManager.getSubTask(id) != null) {
+                            if (taskManager.getSubtasks().containsKey(id)) {
                                 taskManager.updateSubTask(subtask);
                                 sendText(exchange, "Подзадача успешно обновлена");
                             } else {
@@ -84,7 +85,7 @@ public class SubTaskHandler extends BaseHttpHandler {
                         String pathId = path.replaceFirst("/subtasks/", "");
                         int id = parseId(pathId);
 
-                        if (id != -1 && taskManager.getSubTask(id) != null) {
+                        if (id != -1 && taskManager.getSubtasks().containsKey(id)) {
                             taskManager.deleteTaskById(id);
                             sendText(exchange, "Подзадача с ID=" + id + " успешно удалена");
                         } else {

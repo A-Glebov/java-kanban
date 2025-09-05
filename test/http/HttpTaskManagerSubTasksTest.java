@@ -31,7 +31,7 @@ public class HttpTaskManagerSubTasksTest {
     HttpClient client = HttpClient.newHttpClient();
 
     @BeforeEach
-    public void setUp() throws IOException, InterruptedException {
+    public void setUp() throws IOException {
         httpTaskServer = new HttpTaskServer(taskManager);
         httpTaskServer.start();
 
@@ -42,22 +42,13 @@ public class HttpTaskManagerSubTasksTest {
                 Status.NEW, LocalDateTime.of(2025, 1, 1, 1, 0),
                 Duration.ofMinutes(30), 1);
 
-        HttpRequest request1 = HttpRequest.newBuilder().uri(URI.create("http://localhost:8080/epics"))
-                .POST(HttpRequest.BodyPublishers.ofString(gson.toJson(epic))).build();
-        HttpResponse<String> response1 = client.send(request1, HttpResponse.BodyHandlers.ofString());
-
-        HttpRequest request2 = HttpRequest.newBuilder().uri(URI.create("http://localhost:8080/subtasks"))
-                .POST(HttpRequest.BodyPublishers.ofString(gson.toJson(subtask))).build();
-        HttpResponse<String> response2 = client.send(request2, HttpResponse.BodyHandlers.ofString());
-
-        assertEquals(200, response1.statusCode());
-        assertEquals(200, response2.statusCode());
+        taskManager.createEpic(epic);
+        taskManager.createSubTask(subtask);
 
     }
 
     @AfterEach
     public void shutDown() {
-        taskManager.deleteAllTasks();
         taskManager.deleteAllEpic();
         taskManager.deleteAllSubTask();
         client.close();
