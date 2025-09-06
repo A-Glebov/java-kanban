@@ -31,7 +31,6 @@ public class TaskHandler extends BaseHttpHandler {
                     if (Pattern.matches("^/tasks/\\d+$", path)) {
                         String pathId = path.replaceFirst("/tasks/", "");
                         int id = parseId(pathId);
-
                         if (id != -1) {
                             Task task = taskManager.getTask(id);
                             if (task == null) {
@@ -41,7 +40,6 @@ public class TaskHandler extends BaseHttpHandler {
                             String response = gson.toJson(task);
                             sendText(exchange, response);
                         }
-
                     }
 
                 }
@@ -54,11 +52,12 @@ public class TaskHandler extends BaseHttpHandler {
                         taskManager.createTask(task);
 
                         if (taskManager.getListOfTasks().contains(task)) {
-                            sendText(exchange, "Задача успешно добавлена");
+                            sendCreated(exchange, "Задача успешно добавлена");
                         } else {
                             sendHasInteractions(exchange, "Задача пересекается во времени");
                         }
 
+                        return;
                     }
 
                     // Обновление задачи
@@ -68,14 +67,8 @@ public class TaskHandler extends BaseHttpHandler {
                         if (id != -1) {
                             String body = new String(exchange.getRequestBody().readAllBytes(), StandardCharsets.UTF_8);
                             Task task = gson.fromJson(body, Task.class);
-
-                            if (taskManager.getTasks().containsKey(id)) {
-                                taskManager.updateTask(task);
-                                sendText(exchange, "Задача успешно обновлена");
-                            } else {
-                                sendNotFound(exchange, "Задача с ID=" + id + " не найдена");
-                            }
-
+                            taskManager.updateTask(task);
+                            sendCreated(exchange, "Задача успешно обновлена");
                         }
                     }
 
@@ -85,14 +78,8 @@ public class TaskHandler extends BaseHttpHandler {
                     if (Pattern.matches("^/tasks/\\d+$", path)) {
                         String pathId = path.replaceFirst("/tasks/", "");
                         int id = parseId(pathId);
-
-                        if (id != -1 && taskManager.getTasks().containsKey(id)) {
-                            taskManager.deleteTaskById(id);
-                            sendText(exchange, "Задача с ID=" + id + " успешно удалена");
-                        } else {
-                            sendNotFound(exchange, "Задача с ID=" + id + " не найдена");
-                        }
-
+                        taskManager.deleteTaskById(id);
+                        sendText(exchange, "Задача с ID=" + id + " успешно удалена");
                     }
 
                 }

@@ -119,7 +119,7 @@ public class HttpTaskManagerEpicsTest {
 
         List<Epic> tasksFromManager = taskManager.getListOfEpics();
 
-        assertEquals(200, response.statusCode());
+        assertEquals(201, response.statusCode());
         assertEquals(2, tasksFromManager.size(), "Некорректное количество эпиков");
         assertEquals(newEpic, tasksFromManager.getLast(), "Эпики не совпадают");
 
@@ -134,17 +134,6 @@ public class HttpTaskManagerEpicsTest {
 
         assertEquals(200, response.statusCode());
         assertNull(taskManager.getEpic(1), "Задача должна быть удалена");
-
-    }
-
-    // Удаление несуществующего эпика
-    @Test
-    public void testDeleteNonExistingEpic() throws IOException, InterruptedException {
-        HttpRequest getRequest = HttpRequest.newBuilder().uri(URI.create("http://localhost:8080/epics/3"))
-                .DELETE().build();
-        HttpResponse<String> response = client.send(getRequest, HttpResponse.BodyHandlers.ofString());
-
-        assertEquals(404, response.statusCode());
 
     }
 

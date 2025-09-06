@@ -43,6 +43,14 @@ public abstract class BaseHttpHandler implements HttpHandler {
         exchange.close();
     }
 
+    public void sendCreated(HttpExchange exchange, String text) throws IOException {
+        byte[] response = text.getBytes(StandardCharsets.UTF_8);
+        exchange.getResponseHeaders().add("Content-Type", "application/json;charset=utf-8");
+        exchange.sendResponseHeaders(201, response.length);
+        exchange.getResponseBody().write(response);
+        exchange.close();
+    }
+
     public int parseId(String pathId) {
         try {
             return Integer.parseInt(pathId);

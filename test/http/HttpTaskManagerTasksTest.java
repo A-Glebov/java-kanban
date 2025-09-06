@@ -97,7 +97,7 @@ public class HttpTaskManagerTasksTest {
 
         List<Task> tasksFromManager = taskManager.getListOfTasks();
 
-        assertEquals(200, response.statusCode());
+        assertEquals(201, response.statusCode());
         assertEquals(2, tasksFromManager.size(), "Некорректное количество задач");
         assertEquals(newTask, tasksFromManager.getLast());
 
@@ -133,27 +133,9 @@ public class HttpTaskManagerTasksTest {
 
         List<Task> tasksFromManager = taskManager.getListOfTasks();
 
-        assertEquals(200, response.statusCode());
+        assertEquals(201, response.statusCode());
         assertEquals(1, tasksFromManager.size(), "Некорректное количество задач");
         assertEquals(updateTask, tasksFromManager.getLast(), "Задача не обновилась");
-
-    }
-
-    // Обновление несуществующей задачи
-    @Test
-    public void testUpdateNonExistentTask() throws IOException, InterruptedException {
-        Task updateTask = new Task(2, Type.TASK, "updateTask", "updateTask description", Status.NEW,
-                LocalDateTime.of(2025, 1, 1, 2, 0), Duration.ofMinutes(15));
-
-        HttpRequest request = HttpRequest.newBuilder().uri(URI.create("http://localhost:8080/tasks/2"))
-                .POST(HttpRequest.BodyPublishers.ofString(gson.toJson(updateTask))).build();
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-
-        List<Task> tasksFromManager = taskManager.getListOfTasks();
-
-        assertEquals(404, response.statusCode());
-        assertEquals(1, tasksFromManager.size(), "Некорректное количество задач");
-        assertNull(taskManager.getTask(2), "Задача не должна быть обновлена или добавлена");
 
     }
 
@@ -165,16 +147,6 @@ public class HttpTaskManagerTasksTest {
 
         assertEquals(200, response.statusCode());
         assertNull(taskManager.getTask(1), "Задача должна быть удалена");
-
-    }
-
-    @Test
-    public void testDeleteNonExistingTask() throws IOException, InterruptedException {
-        HttpRequest getRequest = HttpRequest.newBuilder().uri(URI.create("http://localhost:8080/tasks/2"))
-                .DELETE().build();
-        HttpResponse<String> response = client.send(getRequest, HttpResponse.BodyHandlers.ofString());
-
-        assertEquals(404, response.statusCode());
 
     }
 

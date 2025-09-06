@@ -45,37 +45,28 @@ public class SubTaskHandler extends BaseHttpHandler {
                 }
 
                 case "POST" -> {
-                    // Добавление новой задачи
                     if (Pattern.matches("^/subtasks$", path)) {
                         String body = new String(exchange.getRequestBody().readAllBytes(), StandardCharsets.UTF_8);
                         SubTask subtask = gson.fromJson(body, SubTask.class);
                         taskManager.createSubTask(subtask);
 
                         if (taskManager.getListOfSubTask().contains(subtask)) {
-                            sendText(exchange, "Подзадача успешно добавлена");
+                            sendCreated(exchange, "Подзадача успешно добавлена");
                         } else {
                             sendHasInteractions(exchange, "Подзадача пересекается во времени");
                         }
                         return;
                     }
 
-                    //Обновление подзадачи
                     if (Pattern.matches("^/subtasks/\\d+$", path)) {
                         String pathId = path.replaceFirst("/subtasks/", "");
                         int id = parseId(pathId);
-
                         if (id != -1) {
                             String body = new String(exchange.getRequestBody().readAllBytes(), StandardCharsets.UTF_8);
                             SubTask subtask = gson.fromJson(body, SubTask.class);
-
-                            if (taskManager.getSubtasks().containsKey(id)) {
-                                taskManager.updateSubTask(subtask);
-                                sendText(exchange, "Подзадача успешно обновлена");
-                            } else {
-                                sendNotFound(exchange, "Подзадача с ID=" + id + " не найдена");
-                            }
+                            taskManager.updateSubTask(subtask);
+                            sendCreated(exchange, "Подзадача успешно обновлена");
                         }
-
                     }
 
                 }
@@ -84,14 +75,10 @@ public class SubTaskHandler extends BaseHttpHandler {
                     if (Pattern.matches("^/subtasks/\\d+$", path)) {
                         String pathId = path.replaceFirst("/subtasks/", "");
                         int id = parseId(pathId);
-
-                        if (id != -1 && taskManager.getSubtasks().containsKey(id)) {
+                        if (id != -1) {
                             taskManager.deleteTaskById(id);
                             sendText(exchange, "Подзадача с ID=" + id + " успешно удалена");
-                        } else {
-                            sendNotFound(exchange, "Подзадача с ID=" + id + " не найдена");
                         }
-
                     }
 
                 }

@@ -5,18 +5,9 @@ import model.SubTask;
 import model.Task;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public interface TaskManager {
-    //Генерация идентификатора задач всех типов
-    int getTaskId();
-
-    HashMap<Integer, Task> getTasks();
-
-    HashMap<Integer, Epic> getEpics();
-
-    HashMap<Integer, SubTask> getSubtasks();
 
     // Получение списка задач
     ArrayList<Task> getListOfTasks();

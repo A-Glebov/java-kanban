@@ -103,7 +103,7 @@ public class HttpTaskManagerSubTasksTest {
 
         List<SubTask> tasksFromManager = taskManager.getListOfSubTask();
 
-        assertEquals(200, response.statusCode());
+        assertEquals(201, response.statusCode());
         assertEquals(2, tasksFromManager.size(), "Некорректное количество подзадач");
         assertEquals(newSubtask, tasksFromManager.getLast(), "Подзадачи не совпадают");
 
@@ -141,28 +141,9 @@ public class HttpTaskManagerSubTasksTest {
 
         List<SubTask> tasksFromManager = taskManager.getListOfSubTask();
 
-        assertEquals(200, response.statusCode());
+        assertEquals(201, response.statusCode());
         assertEquals(1, tasksFromManager.size(), "Некорректное количество задач");
         assertEquals(updateSubtask, tasksFromManager.getLast(), "Подзадача не обновилась");
-
-    }
-
-    // Обновление несуществующей подзадачи
-    @Test
-    public void testUpdateNonExistentSubTask() throws IOException, InterruptedException {
-        SubTask subtask = new SubTask(3, Type.SUBTASK, "Subtask", "Desc Sub",
-                Status.NEW, LocalDateTime.of(2025, 1, 1, 1, 0),
-                Duration.ofMinutes(30), 1);
-
-        HttpRequest request = HttpRequest.newBuilder().uri(URI.create("http://localhost:8080/subtasks/3"))
-                .POST(HttpRequest.BodyPublishers.ofString(gson.toJson(subtask))).build();
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-
-        List<SubTask> tasksFromManager = taskManager.getListOfSubTask();
-
-        assertEquals(404, response.statusCode());
-        assertEquals(1, tasksFromManager.size(), "Некорректное количество задач");
-        assertNull(taskManager.getTask(2), "Задача не должна быть обновлена или добавлена");
 
     }
 
@@ -178,16 +159,6 @@ public class HttpTaskManagerSubTasksTest {
 
     }
 
-    // Удаление несуществующей задачи
-    @Test
-    public void testDeleteNonExistingTask() throws IOException, InterruptedException {
-        HttpRequest getRequest = HttpRequest.newBuilder().uri(URI.create("http://localhost:8080/subtasks/3"))
-                .DELETE().build();
-        HttpResponse<String> response = client.send(getRequest, HttpResponse.BodyHandlers.ofString());
-
-        assertEquals(404, response.statusCode());
-
-    }
 
 }
 

@@ -2,10 +2,12 @@ package http;
 
 import com.sun.net.httpserver.HttpExchange;
 import model.Epic;
+import model.SubTask;
 import service.TaskManager;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.regex.Pattern;
 
 public class EpicHandler extends BaseHttpHandler {
@@ -27,14 +29,16 @@ public class EpicHandler extends BaseHttpHandler {
                         int id = parseId(pathId);
 
                         if (id != -1) {
-                            Epic epic = taskManager.getEpics().get(id);
+                            Epic epic = taskManager.getEpic(id);
+
                             if (epic == null) {
                                 sendNotFound(exchange, "Эпик с ID=" + id + " не найден");
-                                return;
+                            } else {
+                                List<SubTask> subtasks = taskManager.getListOfSubtaskOfEpic(epic);
+                                String response = gson.toJson(subtasks);
+                                sendText(exchange, response);
                             }
-                            String response = gson.toJson(taskManager.getListOfSubtaskOfEpic(epic));
-                            sendText(exchange, response);
-                            return;
+
                         }
 
                     }
@@ -62,15 +66,11 @@ public class EpicHandler extends BaseHttpHandler {
                 }
 
                 case "POST" -> {
-                    // Добавление новой задачи
                     if (Pattern.matches("^/epics$", path)) {
                         String body = new String(exchange.getRequestBody().readAllBytes(), StandardCharsets.UTF_8);
                         Epic epic = gson.fromJson(body, Epic.class);
                         taskManager.createEpic(epic);
-
-                        if (taskManager.getListOfEpics().contains(epic)) {
-                            sendText(exchange, "Эпик успешно добавлен");
-                        }
+                        sendCreated(exchange, "Эпик успешно добавлен");
 
                     }
 
@@ -80,12 +80,9 @@ public class EpicHandler extends BaseHttpHandler {
                     if (Pattern.matches("^/epics/\\d+$", path)) {
                         String pathId = path.replaceFirst("/epics/", "");
                         int id = parseId(pathId);
-
-                        if (id != -1 && taskManager.getEpics().containsKey(id)) {
+                        if (id != -1) {
                             taskManager.deleteEpicById(id);
                             sendText(exchange, "Эпик с ID=" + id + " успешно удален");
-                        } else {
-                            sendNotFound(exchange, "Эпик с ID=" + id + " не найден");
                         }
 
                     }
