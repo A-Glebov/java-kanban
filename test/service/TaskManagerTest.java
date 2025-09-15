@@ -258,5 +258,46 @@ public abstract class TaskManagerTest<T extends TaskManager> {
 
     }
 
+    // Обновление несуществующей задачи
+    @Test
+    public void testUpdateNonExistentTask() {
+        Task updateTask = new Task(2, Type.TASK, "updateTask", "updateTask description", Status.NEW,
+                LocalDateTime.of(2025, 1, 1, 1, 0), Duration.ofMinutes(15));
+        taskManager.updateTask(updateTask);
+        List<Task> tasksFromManager = taskManager.getListOfTasks();
+
+        assertEquals(1, tasksFromManager.size(), "Некорректное количество задач");
+        assertNull(taskManager.getTask(2), "Задача не должна быть обновлена или добавлена");
+
+    }
+
+    // Обновление несуществующего эпика
+    @Test
+    public void testUpdateNonExistentEpic() {
+        Epic updateEpic = new Epic(3, Type.EPIC, "Epic", "Description Epic", Status.NEW,
+                LocalDateTime.of(2025, 5, 9, 12, 0), Duration.ofMinutes(20),
+                new ArrayList<>());
+        taskManager.updateEpic(updateEpic);
+        List<Epic> tasksFromManager = taskManager.getListOfEpics();
+
+        assertEquals(1, tasksFromManager.size(), "Некорректное количество эпиков");
+        assertNull(taskManager.getTask(2), "Эпик не должен быть обновлен или добавлен");
+
+    }
+
+    // Обновление несуществующей подзадачи
+    @Test
+    public void testUpdateNonExistentSubTask() {
+        SubTask updateSubtask = new SubTask(3, Type.SUBTASK, "Subtask", "Desc Sub",
+                Status.NEW, LocalDateTime.of(2025, 1, 1, 1, 0),
+                Duration.ofMinutes(30), 2);
+        taskManager.updateSubTask(updateSubtask);
+        List<SubTask> tasksFromManager = taskManager.getListOfSubTask();
+
+        assertEquals(1, tasksFromManager.size(), "Некорректное количество подзадач");
+        assertNull(taskManager.getTask(2), "Подзадача не должна быть обновлена или добавлена");
+
+    }
+
 
 }

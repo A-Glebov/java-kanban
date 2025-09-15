@@ -70,6 +70,9 @@ public class InMemoryHistoryManager implements HistoryManager {
     // Метод для обновления истории просмотров
     @Override
     public void add(Task task) {
+        if (task == null) {
+            return;
+        }
         remove(task.getId());
         linkLast(task);
         nodes.put(task.getId(), last);

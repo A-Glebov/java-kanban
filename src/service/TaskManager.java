@@ -8,10 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public interface TaskManager {
-    //Генерация идентификатора задач всех типов
-    int getTaskId();
 
-    // А. Получение списка задач
+    // Получение списка задач
     ArrayList<Task> getListOfTasks();
 
     //Получение списка эпиков
@@ -20,7 +18,7 @@ public interface TaskManager {
     // Получение списка всех подзадач
     ArrayList<SubTask> getListOfSubTask();
 
-    // Б. Удаление всех задач
+    // Удаление всех задач
     void deleteAllTasks();
 
     // Удаление всех эпиков
@@ -38,7 +36,7 @@ public interface TaskManager {
     // Получение подзадачи по идентификатору
     SubTask getSubTask(int id);
 
-    // D. Создание задачи
+    // Создание задачи
     void createTask(Task task);
 
     // Создание эпика
@@ -47,7 +45,7 @@ public interface TaskManager {
     // Создание суб задачи
     void createSubTask(SubTask subTask);
 
-    //E. Обновление задачи
+    // Обновление задачи
     void updateTask(Task task);
 
     //Обновление эпика
@@ -56,7 +54,7 @@ public interface TaskManager {
     // Обновление подзадачи
     void updateSubTask(SubTask subTask);
 
-    //F. Удаление по идентификатору
+    // Удаление по идентификатору
     void deleteTaskById(int taskId);
 
     // Удаление эпик по Id
@@ -72,7 +70,5 @@ public interface TaskManager {
     List<Task> getHistory();
 
     List<Task> getPrioritizedTasks();
-
-    boolean validateTaskByDateTime(Task task);
 
 }
